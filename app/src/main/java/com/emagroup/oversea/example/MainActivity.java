@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.emagroup.oversea.sdk.HttpRequestor;
+import com.emagroup.oversea.sdk.L;
 
 import rx.Observable;
 import rx.Observer;
@@ -21,14 +22,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         rxDemo2();
+        L.d("hahahahah");
     }
+
+
+
+
+
+
 
     private void rxDemo() {
         Subscription stringObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
                 try {
-                    String result = new HttpRequestor().doPost("https://www.baidu.com/", null);
+                    String result = new HttpRequestor().doGet("https://www.baidu.com/", null);
                     subscriber.onNext(result);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -41,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void call(String s) {
                         Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+
                     }
                 });
     }

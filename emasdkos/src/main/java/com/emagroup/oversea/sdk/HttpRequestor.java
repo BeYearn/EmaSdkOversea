@@ -22,7 +22,7 @@ import java.util.Map;
 public class HttpRequestor {
 
     private String charset = "utf-8";
-    private Integer connectTimeout = 5000;
+    private Integer Timeout = 5000;
     private Integer socketTimeout = null;
     private String proxyHost = null;
     private Integer proxyPort = null;
@@ -35,16 +35,22 @@ public class HttpRequestor {
      * @throws Exception
      * @throws IOException
      */
-    public String doGet(String url) throws Exception {
+    public String doGet(String url, Map<String, String> params) throws Exception {
+
+        // 拼凑get请求的URL字串，使用URLEncoder.encode对特殊和不可见字符进行编码
+        url = buildGetUrl(url, params);
+
+        L.e(url);
 
         URL localURL = new URL(url);
 
         URLConnection connection = openConnection(localURL);
+
         HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
 
         httpURLConnection.setRequestProperty("Accept-Charset", charset);
         httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        httpURLConnection.setConnectTimeout(connectTimeout);
+        httpURLConnection.setConnectTimeout(Timeout);
         InputStream inputStream = null;
         InputStreamReader inputStreamReader = null;
         BufferedReader reader = null;
@@ -80,7 +86,6 @@ public class HttpRequestor {
             if (httpURLConnection != null) {
                 httpURLConnection.disconnect();
             }
-
         }
 
         return resultBuffer.toString();
@@ -96,8 +101,8 @@ public class HttpRequestor {
      */
     public String doPost(String url, Map parameterMap) throws Exception {
 
-        /* Translate parameter map to parameter date string */
         StringBuffer parameterBuffer = new StringBuffer();
+
         if (parameterMap != null) {
             Iterator iterator = parameterMap.keySet().iterator();
             String key = null;
@@ -109,27 +114,33 @@ public class HttpRequestor {
                 } else {
                     value = "";
                 }
-
                 parameterBuffer.append(key).append("=").append(value);
                 if (iterator.hasNext()) {
                     parameterBuffer.append("&");
                 }
             }
-        }
 
-        System.out.println("POST parameter : " + parameterBuffer.toString());
+            L.e(parameterBuffer.toString());
+        }
 
         URL localURL = new URL(url);
 
         URLConnection connection = openConnection(localURL);
+
         HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
 
+        //设置是否向httpUrlConnection输出，因为这个是post请求，参数要放在http正文内，因此需要设为true, 默认情况下是false;
         httpURLConnection.setDoOutput(true);
+        //设置是否从httpUrlConnection读入，默认情况下是true;
+        httpURLConnection.setDoInput(true);
+        // Post 请求不能使用缓存
+        httpURLConnection.setUseCaches(false);
+        // 设定请求的方法为"POST"，默认是GET
         httpURLConnection.setRequestMethod("POST");
         httpURLConnection.setRequestProperty("Accept-Charset", charset);
         httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-        //httpURLConnection.setRequestProperty("Content-Length", String.valueOf(parameterBuffer.length()));
-        httpURLConnection.setConnectTimeout(connectTimeout);
+        httpURLConnection.setConnectTimeout(Timeout);
+        httpURLConnection.setReadTimeout(Timeout);
 
         OutputStream outputStream = null;
         OutputStreamWriter outputStreamWriter = null;
@@ -140,6 +151,7 @@ public class HttpRequestor {
         String tempLine = null;
 
         try {
+            // 此处getOutputStream会隐含的进行connect方法，所以在开发中不调用上述的connect()也可以)。
             outputStream = httpURLConnection.getOutputStream();
             outputStreamWriter = new OutputStreamWriter(outputStream);
 
@@ -200,32 +212,43 @@ public class HttpRequestor {
         return connection;
     }
 
+
     /**
-     * Render request according setting
+     * 拼接url
+     *
+     * @param url
+     * @param map
+     * @return
      */
-    /*private void renderRequest(URLConnection connection) {
-
-        if (connectTimeout != null) {
-            connection.setConnectTimeout(connectTimeout);
+    private String buildGetUrl(String url, Map<String, String> map) {
+        if (map == null || map.size() == 0) {
+            return url;
         }
-
-        if (socketTimeout != null) {
-            connection.setReadTimeout(socketTimeout);
+        StringBuffer sb = new StringBuffer();
+        sb.append(url);
+        int i = 0;
+        for (String key : map.keySet()) {
+            if (i == 0) {
+                sb.append("?");
+            } else {
+                sb.append("&");
+            }
+            sb.append(key).append("=").append(map.get(key));
+            i++;
         }
-
-    }*/
-
+        return sb.toString();
+    }
 
 
     /*
      * Getter & Setter
      */
-    public Integer getConnectTimeout() {
-        return connectTimeout;
+    public Integer getTimeout() {
+        return Timeout;
     }
 
-    public void setConnectTimeout(Integer connectTimeout) {
-        this.connectTimeout = connectTimeout;
+    public void setTimeout(Integer timeout) {
+        this.Timeout = timeout;
     }
 
     public Integer getSocketTimeout() {
