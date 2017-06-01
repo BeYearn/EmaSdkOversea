@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         Observer<String> observer = new Observer<String>() {
             @Override
             public void onCompleted() {
-
+                Toast.makeText(MainActivity.this, "complete", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -83,16 +83,18 @@ public class MainActivity extends AppCompatActivity {
                     subscriber.onNext(result);
                     subscriber.onNext("Hi");
                     subscriber.onNext("Aloha");
+                    subscriber.onCompleted();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
-        stringObservable
+        Subscription subscribe = stringObservable
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
+        subscribe.unsubscribe();
 
     }
 }

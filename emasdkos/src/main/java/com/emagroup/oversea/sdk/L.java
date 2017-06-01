@@ -11,11 +11,7 @@ public class L {
     private static String className;//类名
     private static String methodName;//方法名
     private static int lineNumber;//行数
-
-    public static boolean isDebuggable() {
-        //return BuildConfig.DEBUG;
-        return true;
-    }
+    public static boolean isDebug = true;
 
     private static String createLog(String log) {
         StringBuilder buffer = new StringBuilder();
@@ -42,7 +38,7 @@ public class L {
 
 
     public static void e(String message) {
-        if (!isDebuggable())
+        if (!isDebug)
             return;
 
         // Throwable instance must be created before any methods
@@ -51,7 +47,7 @@ public class L {
     }
 
     public static void e(String tag, String message) {
-        if (!isDebuggable())
+        if (!isDebug)
             return;
 
         // Throwable instance must be created before any methods
@@ -61,7 +57,7 @@ public class L {
 
 
     public static void i(String message) {
-        if (!isDebuggable())
+        if (!isDebug)
             return;
 
         getMethodNames(new Throwable().getStackTrace());
@@ -69,7 +65,7 @@ public class L {
     }
 
     public static void d(String message) {
-        if (!isDebuggable())
+        if (!isDebug)
             return;
 
         getMethodNames(new Throwable().getStackTrace());
@@ -77,7 +73,7 @@ public class L {
     }
 
     public static void v(String message) {
-        if (!isDebuggable())
+        if (!isDebug)
             return;
 
         getMethodNames(new Throwable().getStackTrace());
@@ -85,7 +81,7 @@ public class L {
     }
 
     public static void w(String message) {
-        if (!isDebuggable())
+        if (!isDebug)
             return;
 
         getMethodNames(new Throwable().getStackTrace());
@@ -93,7 +89,7 @@ public class L {
     }
 
     public static void wtf(String message) {
-        if (!isDebuggable())
+        if (!isDebug)
             return;
 
         getMethodNames(new Throwable().getStackTrace());
