@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "527010470096",
+    "project_id": "firebase-emaoversea"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:527010470096:android:a205188bcb996289",
+        "android_client_info": {
+          "package_name": "com.emagroup.oversea.sdk"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "527010470096-uauo2spsdsp6ac8ainu2or26hvjfq78d.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "527010470096-8944eaeoeuud73qv1ki094fl2i15484m.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.emagroup.oversea.sdk",
+            "certificate_hash": "6128491db5efdd98ad4b2583d08b602db518d1d9"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAEDlUexoxX1oqLaLgqh9AH8ETI0tR7t0I"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

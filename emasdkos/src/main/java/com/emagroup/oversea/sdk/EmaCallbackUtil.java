@@ -1,0 +1,31 @@
+package com.emagroup.oversea.sdk;
+
+/**
+ * Created by beyearn on 2017/7/3.
+ */
+
+public class EmaCallbackUtil {
+
+    private static EmaCallbackUtil mInstance;
+
+    private EmaCallbackUtil(){}
+
+    private EmaSDKListener mInitLoginListener;
+
+    public void setmInitLoginListener(EmaSDKListener mInitLoginListener) {
+        this.mInitLoginListener = mInitLoginListener;
+    }
+
+    public static EmaCallbackUtil getInstance(){
+        if(mInstance == null){
+            mInstance = new EmaCallbackUtil();
+        }
+        return mInstance;
+    }
+
+    public void onInitLoginCallback(int msgCode,String msgStr){
+
+        mInitLoginListener.onCallBack(msgCode,msgStr);
+    }
+
+}

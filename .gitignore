@@ -29,3 +29,6 @@ proguard-project.txt
 /gradle
 gradlew
 .DS_Store
+
+# Keystore files
+app/appsign
