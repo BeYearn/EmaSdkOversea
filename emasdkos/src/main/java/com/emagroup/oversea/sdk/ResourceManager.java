@@ -1,7 +1,11 @@
 package com.emagroup.oversea.sdk;
 
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 
 /**
@@ -45,6 +49,27 @@ public class ResourceManager {
         return mResources.getIdentifier(recourceName,"id",mPackageName);
     }
 
+    /**
+     * 根据key获取metaData的string类型的数据
+     *
+     * @param context
+     * @param key
+     * @return
+     */
+    public static String getStringFromMetaData(Context context, String key) {
+        ApplicationInfo ai;
+        String value = null;
+        try {
+            ai = context.getPackageManager().getApplicationInfo(
+                    context.getPackageName(), PackageManager.GET_META_DATA);
+            Bundle bundle = ai.metaData;
+            value = bundle.getString(key);
+        } catch (Exception e) {
+            Log.e("getStringFromMetaData", "参数设置错误, 请检查！");
+            e.printStackTrace();
+        }
+        return value;
+    }
 
     /**
      * 由布局文件名字获得实例化出来的view（暂时不考虑横竖屏）
@@ -55,4 +80,11 @@ public class ResourceManager {
     }
 
 
+    public static String getOpId(Context context){
+        return getStringFromMetaData(context,"EMA_OP_ID").substring(2);
+    }
+
+    public static String getGameId(Context context){
+        return getStringFromMetaData(context,"EMA_GAME_ID").substring(2);
+    }
 }

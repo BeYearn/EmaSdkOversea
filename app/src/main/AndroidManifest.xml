@@ -3,6 +3,8 @@
     package="com.emagroup.oversea.example">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -18,10 +20,21 @@
             </intent-filter>
         </activity>
 
+
+        <meta-data
+            android:name="EMA_GAME_ID"
+            android:value="ID168" />
+        <meta-data
+            android:name="EMA_OP_ID"
+            android:value="ID2106" />
+
+
         <activity
             android:name="com.emagroup.oversea.sdk.EmaLoginActivity"
-            android:theme="@style/Theme.ema.dialog">
-        </activity>
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity
+            android:name="com.emagroup.oversea.sdk.EmaGoogleLoginActivity"
+            android:theme="@style/Theme.ema.dialog"/>
     </application>
 
 </manifest>

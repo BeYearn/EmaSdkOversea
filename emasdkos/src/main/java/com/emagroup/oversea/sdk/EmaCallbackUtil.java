@@ -25,7 +25,13 @@ public class EmaCallbackUtil {
 
     public void onInitLoginCallback(int msgCode,String msgStr){
 
+        switch (msgCode){
+            case EmaCallBackConst.LOGINSUCCESS:
+
+                break;
+        }
         mInitLoginListener.onCallBack(msgCode,msgStr);
+
     }
 
 }

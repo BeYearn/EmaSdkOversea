@@ -1,30 +1,28 @@
 package com.emagroup.oversea.sdk;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 /**
- * Created by beyearn on 2017/6/30.
+ * Created by beyearn on 2018/2/26.
  */
 
-public class EmaLoginActivity extends AppCompatActivity implements View.OnClickListener, GoogleApiClient.OnConnectionFailedListener {
+public class EmaLoginActivity extends AppCompatActivity {
 
     private ResourceManager mResourceManager;
-    private GoogleApiClient mGoogleApiClient;
-
-
-    private static final int RC_SIGN_IN = 9001;
+    private WebView mWebView;
+    private ProgressBar mProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,80 +30,89 @@ public class EmaLoginActivity extends AppCompatActivity implements View.OnClickL
         mResourceManager = ResourceManager.getInstance(this.getApplicationContext());
         setContentView(mResourceManager.getLayoutId("ema_activity_login"));
 
-        SignInButton signInButton = (SignInButton) findViewById(mResourceManager.getViewId("bt_gl_login"));
-        signInButton.setOnClickListener(this);
+        mWebView = (WebView) findViewById(mResourceManager.getViewId("wv_login"));
+        mProgressBar = (ProgressBar) findViewById(mResourceManager.getViewId("wv_progressbar"));
 
-        //setDefaultFragment();
 
-        // Configure sign-in to request the user's ID, email address, and basic
-        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
+        Intent intent = getIntent();
+        String loginUrl = intent.getStringExtra("loginUrl");
+        L.e("loginurl", loginUrl);
 
-        // Build a GoogleApiClient with access to the Google Sign-In API and the
-        // options specified by gso.
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+        initView();
 
-        // Set the dimensions of the sign-in button.
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        mWebView.loadUrl(loginUrl);
+
     }
 
+    /**
+     * 与js交互时用到的方法对象，在js里直接调用
+     */
+    public class JavaScriptinterface {
+        Context context;
 
-    private void signIn() {
+        public JavaScriptinterface(Context c) {
+            context = c;
+        }
 
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
+        @JavascriptInterface
+        public void close(String num) {
+            ToastHelper.toast(context, "密码修改成功");
+        }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+        @JavascriptInterface
+        public void ema_didLogin(String data) {
+            L.e("didLogin", data);
+            EmaUser.getInstance().doUserResult(EmaLoginActivity.this.getApplicationContext(), data);
         }
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            String email = acct.getEmail();
-            EmaCallbackUtil.getInstance().onInitLoginCallback(EmaCallBackConst.LOGINSUCCESS,"login success");
 
+    private void initView() {
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.addJavascriptInterface(new JavaScriptinterface(this), "webview");
+        mWebView.getSettings().setSupportZoom(true);
+        mWebView.getSettings().setUseWideViewPort(true);
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
+        mWebView.getSettings().setBuiltInZoomControls(true);
+        //mWebView.getSettings().setTextZoom(75);
+        mWebView.getSettings().setLoadsImagesAutomatically(true);
+        mWebView.getSettings().setAllowUniversalAccessFromFileURLs(true);//设置是否允许通过file url加载的Javascript可以访问其他的源，包括其他的文件和http,https等其他的源
+        mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+        mWebView.getSettings().setDomStorageEnabled(true);
+        mWebView.setWebViewClient(new WebViewClient());
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (newProgress == 100) {
+                    mProgressBar.setVisibility(View.GONE);
+                } else {
+                    if (View.INVISIBLE == mProgressBar.getVisibility()) {
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+                    mProgressBar.setProgress(newProgress);
+                }
+            }
+        });
+
+
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        if (mWebView.canGoBack()) {
+            mWebView.goBack();
         } else {
-            // Signed out, show unauthenticated UI.
-        }
-    }
-
-
-
-    @Override
-    public void onClick(View v) {
-        int viewId = v.getId();
-        if (viewId == mResourceManager.getViewId("bt_gl_login")) {
-            signIn();
-        } else {
-
+            this.finish();
         }
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+    protected void onDestroy() {
+        CookieSyncManager.createInstance(this);
+        CookieManager.getInstance().removeAllCookie();
+        super.onDestroy();
     }
-
-     /*private void setDefaultFragment() {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        EmaLoginFragment emaLoginFragment = new EmaLoginFragment();
-        transaction.replace(mResourceManager.getViewId("fl_content"), emaLoginFragment);
-        transaction.commit();
-    }*/
 }

@@ -9,8 +9,11 @@ import android.widget.Toast;
 import com.emagroup.oversea.sdk.EmaCallBackConst;
 import com.emagroup.oversea.sdk.EmaSDKListener;
 import com.emagroup.oversea.sdk.EmaSdk;
+import com.emagroup.oversea.sdk.EmaUser;
 import com.emagroup.oversea.sdk.HttpRequestor;
+import com.emagroup.oversea.sdk.L;
 import com.emagroup.oversea.sdk.ToastHelper;
+import com.emagroup.oversea.sdk.UserLoginInfo;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
@@ -22,7 +25,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private SignInButton btLogin;
     private Button btPay;
@@ -45,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         EmaSdk.getInstance().init(this, new EmaSDKListener() {
             @Override
             public void onCallBack(int resultCode, String decr) {
-                switch (resultCode){
+                switch (resultCode) {
                     case EmaCallBackConst.INITSUCCESS://初始化SDK成功回调
                         ToastHelper.toast(MainActivity.this, "sdk初始化成功");
                         break;
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         break;
                 }
             }
-        });
+        }, "Y[]D(s<swIB%X~2G");
 
 
         btLogin = (SignInButton) findViewById(R.id.bt_login);
@@ -92,35 +95,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.bt_login:
 
 
                 EmaSdk.getInstance().login();
 
                 break;
+            case R.id.bt_snap_shot:
+                UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(MainActivity.this);
+                L.e("token", userLoginInfo.getAccessToken());
+                break;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private void rxDemo() {

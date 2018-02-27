@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Created by Administrator on 2016/10/9.
  */
-public interface EmaUtilsInterface {
+public interface IEmaSdk {
 
     /**
      * 无延迟，立刻初始化的
