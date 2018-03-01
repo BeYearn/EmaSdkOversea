@@ -63,6 +63,10 @@ public class ProgressUtil {
         mActivity.registerReceiver(getkeyOkReciver, filter);
     }
 
+    public void unRegister() {
+        mActivity.unregisterReceiver(getkeyOkReciver);
+    }
+
     public void openProgressDialog() {
         Intent intent = new Intent(EmaConst.EMA_BC_PROGRESS_ACTION);
         intent.putExtra(EmaConst.EMA_BC_PROGRESS_STATE, EmaConst.EMA_BC_PROGRESS_START);

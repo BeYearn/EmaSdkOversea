@@ -151,6 +151,7 @@ public class EmaSdk {
 
 
     public void login() {
+        ProgressUtil.getInstance(mActivity).openProgressDialog();
         ThreadUtil.runInSubThread(new Runnable() {
             @Override
             public void run() {
@@ -175,6 +176,7 @@ public class EmaSdk {
                         if (code == 0) {
                             //token有效 登录成功
                             EmaCallbackUtil.getInstance().onInitLoginCallback(EmaCallBackConst.LOGINSUCCESS, "login success");
+                            ProgressUtil.getInstance(mActivity).closeProgressDialog();
                             return;
                         }
                     } catch (Exception e) {
@@ -184,7 +186,7 @@ public class EmaSdk {
                 }
 
 
-                //2.无效或没有重新授权
+                //2.无效或没有 则重新授权
                 HashMap<String, String> urlParams = new HashMap<>();
                 urlParams.put("client_id", getClientId());
                 urlParams.put("redirect", "https://accounts.ema.games/client/gettoken");
@@ -220,6 +222,8 @@ public class EmaSdk {
                 message.what = EmaConst.EMA_LOGIN_URL_DONE;
                 message.obj = loginUrl;
                 mHandler.sendMessage(message);
+
+                ProgressUtil.getInstance(mActivity).closeProgressDialog();
             }
         });
     }
@@ -231,6 +235,8 @@ public class EmaSdk {
 
 
         EmaCallbackUtil.getInstance().setPayListener(payListener);
+
+        ProgressUtil.getInstance(mActivity).openProgressDialog();
 
         ThreadUtil.runInSubThread(new Runnable() {
             @Override
@@ -278,6 +284,7 @@ public class EmaSdk {
                     } else {
                         EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYFALIED, "create order failed");
                     }
+                    ProgressUtil.getInstance(mActivity).closeProgressDialog();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -393,6 +400,8 @@ public class EmaSdk {
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
+        ProgressUtil.getInstance(mActivity).openProgressDialog();
+
         switch (requestCode) {
             case 1001:
                 if (intent == null) {
@@ -431,13 +440,17 @@ public class EmaSdk {
                                 L.e("payNotify", "result: " + s);
 
                                 JSONObject notifyResutl = new JSONObject(s);
-                                if (notifyResutl.getInt("code") == 0) {
+                                if (notifyResutl.getInt("code") == 0) { //gpa购买成功
                                     EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYSUCCESS, "purchase successful");
-                                }
 
+                                    //此处要不要马上消耗掉????
+                                    //消耗代码  if 金币类 就马上消耗
+
+                                }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+                            ProgressUtil.getInstance(mActivity).closeProgressDialog();
                         }
                     });
                 } else if (resultCode == Activity.RESULT_CANCELED) {
@@ -468,6 +481,8 @@ public class EmaSdk {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
+
+                            ProgressUtil.getInstance(mActivity).closeProgressDialog();
                         }
                     });
                 }
