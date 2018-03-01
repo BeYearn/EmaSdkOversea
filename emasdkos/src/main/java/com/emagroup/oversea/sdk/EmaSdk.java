@@ -101,6 +101,9 @@ public class EmaSdk {
         this.mInitLoginListener = listener;
         this.mSecret = secret;
 
+        //初始化广播
+        ProgressUtil.getInstance(mActivity).initBroadcastRevicer();
+
         //设置环境
         String envi = ResourceManager.getEnvi(activity.getApplicationContext());
         if (envi.equals("testing")) {
@@ -108,6 +111,7 @@ public class EmaSdk {
         } else {
             //默认就是正式
         }
+        ProgressUtil.getInstance(mActivity).openProgressDialog();
 
         //请求权限
         ComUtils.requestPermission(activity);
@@ -135,9 +139,9 @@ public class EmaSdk {
                     e.printStackTrace();
                     mHandler.sendEmptyMessage(EmaCallBackConst.INITFALIED);
                 }
+                ProgressUtil.getInstance(mActivity).closeProgressDialog();
             }
         });
-
 
         //绑定googleplay购买结算服务
         Intent serviceIntent = new Intent("com.android.vending.billing.InAppBillingService.BIND");

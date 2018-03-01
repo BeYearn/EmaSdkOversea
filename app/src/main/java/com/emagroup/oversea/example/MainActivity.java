@@ -12,6 +12,7 @@ import com.emagroup.oversea.sdk.EmaCallBackConst;
 import com.emagroup.oversea.sdk.EmaSDKListener;
 import com.emagroup.oversea.sdk.EmaSdk;
 import com.emagroup.oversea.sdk.HttpRequestor;
+import com.emagroup.oversea.sdk.ProgressUtil;
 import com.emagroup.oversea.sdk.ToastHelper;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -131,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 break;
 
+            case R.id.bt_emshare:
+                ProgressUtil.getInstance(MainActivity.this).openProgressDialog();
+
+                break;
             case R.id.bt_snap_shot:
                 /*UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(MainActivity.this);
                 L.e("token", userLoginInfo.getAccessToken());*/

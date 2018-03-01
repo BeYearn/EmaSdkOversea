@@ -32,7 +32,7 @@
             android:value="ID2106" />
         <meta-data
             android:name="EMA_WHICH_ENVI"
-            android:value=""/>
+            android:value="production"/>
 
 
         <activity
