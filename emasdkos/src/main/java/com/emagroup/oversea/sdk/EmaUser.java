@@ -19,6 +19,7 @@ public class EmaUser {
     private static EmaUser mInstance;
     private UserLoginInfo mUserLoginInfo;
     public static final String LOGIN_INFO_SAVE_NAME = "userLoginInfo";
+    private OrderInfo mOrderInfo;
 
     private EmaUser() {
     }
@@ -39,8 +40,16 @@ public class EmaUser {
         }
     }
 
+    public OrderInfo getUserOrderInfo() {
+        return mOrderInfo;
+    }
 
-    public void doUserResult(Context context, String data) {
+    public void clearOrderInfo(){
+        mOrderInfo=null;
+    }
+
+
+    public void setLoginInfo(Context context, String data) {
         try {
             JSONObject loginResult = new JSONObject(data);
             int code = loginResult.getInt("code");
@@ -70,6 +79,36 @@ public class EmaUser {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setOrderInfo(String orderInfo) {
+        if(mOrderInfo==null){
+            mOrderInfo = new OrderInfo();
+        }
+        try {
+            JSONObject data = new JSONObject(orderInfo);
+            String order_id = data.getString("order_id");
+            String op_id = data.getString("op_id");
+            String game_id = data.getString("game_id");
+            String product_id = data.getString("product_id");
+            String product_name = data.getString("product_name");
+            String price = data.getString("price");
+            String currency = data.getString("currency");
+            String quantity = data.getString("quantity");
+
+            mOrderInfo.setCurrency(currency);
+            mOrderInfo.setGame_id(game_id);
+            mOrderInfo.setOp_id(op_id);
+            mOrderInfo.setOrder_id(order_id);
+            mOrderInfo.setPrice(Double.parseDouble(price));
+            mOrderInfo.setQuantity(quantity);
+            mOrderInfo.setProduct_name(product_name);
+            mOrderInfo.setProduct_id(product_id);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
 

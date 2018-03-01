@@ -87,4 +87,7 @@ public class ResourceManager {
     public static String getGameId(Context context){
         return getStringFromMetaData(context,"EMA_GAME_ID").substring(2);
     }
+    public static String getEnvi(Context context){
+        return getStringFromMetaData(context,"EMA_WHICH_ENVI");
+    }
 }

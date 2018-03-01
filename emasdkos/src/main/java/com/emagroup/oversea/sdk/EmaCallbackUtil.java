@@ -7,8 +7,10 @@ package com.emagroup.oversea.sdk;
 public class EmaCallbackUtil {
 
     private static EmaCallbackUtil mInstance;
+    private EmaSDKListener mPayListener;
 
-    private EmaCallbackUtil(){}
+    private EmaCallbackUtil() {
+    }
 
     private EmaSDKListener mInitLoginListener;
 
@@ -16,22 +18,31 @@ public class EmaCallbackUtil {
         this.mInitLoginListener = mInitLoginListener;
     }
 
-    public static EmaCallbackUtil getInstance(){
-        if(mInstance == null){
+    public static EmaCallbackUtil getInstance() {
+        if (mInstance == null) {
             mInstance = new EmaCallbackUtil();
         }
         return mInstance;
     }
 
-    public void onInitLoginCallback(int msgCode,String msgStr){
+    public void onInitLoginCallback(int msgCode, String msgStr) {
 
-        switch (msgCode){
+        switch (msgCode) {
             case EmaCallBackConst.LOGINSUCCESS:
 
                 break;
         }
-        mInitLoginListener.onCallBack(msgCode,msgStr);
+        mInitLoginListener.onCallBack(msgCode, msgStr);
 
     }
 
+    public void setPayListener(EmaSDKListener payListener) {
+        this.mPayListener = payListener;
+    }
+
+    public void onPayCallBack(int msgCode, String msgStr) {
+
+        mPayListener.onCallBack(msgCode, msgStr);
+
+    }
 }

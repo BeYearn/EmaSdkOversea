@@ -62,7 +62,8 @@ public class EmaLoginActivity extends AppCompatActivity {
         @JavascriptInterface
         public void ema_didLogin(String data) {
             L.e("didLogin", data);
-            EmaUser.getInstance().doUserResult(EmaLoginActivity.this.getApplicationContext(), data);
+            EmaUser.getInstance().setLoginInfo(EmaLoginActivity.this.getApplicationContext(), data);
+            EmaLoginActivity.this.finish();
         }
     }
 

@@ -5,9 +5,12 @@ package com.emagroup.oversea.sdk;
  */
 public class Url {
 
-    public static final String TESTING_SERVER_URL="https://testing-platform.lemonade-game.com:8443";
     public static final String STAGING_SERVER_URL="https://staging-platform.lemonade-game.com";
     public static final String PRODUCTION_SERVER_URL="https://platform.lemonade-game.com";
+
+
+
+    public static final String TESTING_SERVER_URL="http://accounts-test.ema.games";
 
 
     private static String serverUrl="https://accounts.ema.games";
@@ -47,4 +50,17 @@ public class Url {
         return serverUrl+"/client/index";
     }
 
+
+    public static String createOrderUrl(){
+        return serverUrl+"/sdk/default/create-order";
+    }
+
+    public static String cancleOrder() {
+        return serverUrl+"/sdk/default/cancel-order";
+    }
+
+    public static String payNotifyUrl() {
+        return serverUrl+"/sdk/default/google-notify";
+        //return "http://accounts-test.ema.games/sdk/default/google-notify";
+    }
 }

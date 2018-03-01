@@ -1,6 +1,8 @@
 package com.emagroup.oversea.example;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -9,13 +11,12 @@ import android.widget.Toast;
 import com.emagroup.oversea.sdk.EmaCallBackConst;
 import com.emagroup.oversea.sdk.EmaSDKListener;
 import com.emagroup.oversea.sdk.EmaSdk;
-import com.emagroup.oversea.sdk.EmaUser;
 import com.emagroup.oversea.sdk.HttpRequestor;
-import com.emagroup.oversea.sdk.L;
 import com.emagroup.oversea.sdk.ToastHelper;
-import com.emagroup.oversea.sdk.UserLoginInfo;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
+
+import java.util.HashMap;
 
 import rx.Observable;
 import rx.Observer;
@@ -102,13 +103,61 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 EmaSdk.getInstance().login();
 
                 break;
+
+            case R.id.bt_pay:
+                HashMap<String, String> payParams = new HashMap<>();
+                payParams.put("server_id", "168000100001");
+                payParams.put("quantity", "1");
+                payParams.put("product_id", "com.emagroups.wol.40");
+                payParams.put("role_id", "test001");
+
+                EmaSdk.getInstance().pay(payParams, new EmaSDKListener() {
+                    @Override
+                    public void onCallBack(int resultCode, String decr) {
+                        ToastHelper.toast(MainActivity.this, decr);
+                        switch (resultCode) {
+                            case EmaCallBackConst.PAYSUCCESS:
+
+                                break;
+                            case EmaCallBackConst.PAYFALIED:
+
+                                break;
+                            case EmaCallBackConst.PAYCANELI:
+
+
+                                break;
+                        }
+                    }
+                });
+                break;
+
             case R.id.bt_snap_shot:
-                UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(MainActivity.this);
-                L.e("token", userLoginInfo.getAccessToken());
+                /*UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(MainActivity.this);
+                L.e("token", userLoginInfo.getAccessToken());*/
+
+                EmaSdk.getInstance().consumeHad();
+
                 break;
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // super.onActivityResult(requestCode, resultCode, data);
+        EmaSdk.getInstance().onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        EmaSdk.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @Override
+    protected void onDestroy() {
+        EmaSdk.getInstance().onDestory();
+        super.onDestroy();
+    }
 
     private void rxDemo() {
         Subscription stringObservable = Observable.create(new Observable.OnSubscribe<String>() {

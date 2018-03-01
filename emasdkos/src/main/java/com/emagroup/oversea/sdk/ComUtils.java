@@ -1,7 +1,11 @@
 package com.emagroup.oversea.sdk;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,6 +16,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static com.emagroup.oversea.sdk.EmaConst.REQUEST_CODE_READPHONESTATE_PERMISSION;
 
 /**
  * Created by beyearn on 2018/2/26.
@@ -125,4 +131,14 @@ public class ComUtils {
         return DEVICE_ID;
     }
 
+
+    public static void requestPermission(Activity activity) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int checkSelfPermission = activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE);
+            if(checkSelfPermission!= PackageManager.PERMISSION_GRANTED){
+                activity.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},REQUEST_CODE_READPHONESTATE_PERMISSION);
+            }
+        } else {
+        }
+    }
 }
