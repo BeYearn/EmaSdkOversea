@@ -81,7 +81,7 @@ public class EmaUser {
         }
     }
 
-    public void setOrderInfo(String orderInfo) {
+    public void setOrderInfo(String orderInfo, boolean consume_now) {
         if(mOrderInfo==null){
             mOrderInfo = new OrderInfo();
         }
@@ -104,6 +104,8 @@ public class EmaUser {
             mOrderInfo.setQuantity(quantity);
             mOrderInfo.setProduct_name(product_name);
             mOrderInfo.setProduct_id(product_id);
+
+            mOrderInfo.setConsumeNow(consume_now);
 
         } catch (JSONException e) {
             e.printStackTrace();

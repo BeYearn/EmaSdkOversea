@@ -26,6 +26,7 @@ public class OrderInfo {
     private double price;
     private String currency;
     private String quantity;
+    private boolean consumeNow;
 
     public String getOrder_id() {
         return order_id;
@@ -89,5 +90,12 @@ public class OrderInfo {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public boolean isConsumeNow() {
+        return consumeNow;
+    }
+    public void setConsumeNow(boolean consumeNow) {
+        this.consumeNow = consumeNow;
     }
 }

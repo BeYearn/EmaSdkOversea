@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.os.RemoteException;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -253,6 +254,7 @@ public class EmaSdk {
                 params.put("quantity", payParams.get("quantity"));
                 params.put("product_id", payParams.get("product_id"));
                 params.put("role_id", payParams.get("role_id"));
+                params.put("area_id",payParams.get("area_id"));
 
                 params.put("device_id", ComUtils.getDEVICE_ID(mActivity.getApplicationContext()));
                 params.put("token", userLoginInfo.getAccessToken());
@@ -266,7 +268,8 @@ public class EmaSdk {
                     JSONObject jsonObject = new JSONObject(orderInfo);
                     if (jsonObject.getInt("code") == 0) {
 
-                        EmaUser.getInstance().setOrderInfo(jsonObject.getString("data"));
+                        boolean consume_now = Boolean.parseBoolean(payParams.get("consume_now"));
+                        EmaUser.getInstance().setOrderInfo(jsonObject.getString("data"),consume_now);
 
                         Bundle buyIntentBundle = mService.getBuyIntent(3, mActivity.getPackageName()
                                 , EmaUser.getInstance().getUserOrderInfo().getProduct_id(), "inapp", EmaUser.getInstance().getUserOrderInfo().getOrder_id());
@@ -279,13 +282,16 @@ public class EmaSdk {
                         if (pendingIntent.getIntentSender() == null) {
                             Log.e("google pay", "the product is not consumed");
                         } else {
-                            mActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1001, new Intent(), Integer.valueOf(0), Integer.valueOf(0), Integer.valueOf(0));
+                            mActivity.startIntentSenderForResult(pendingIntent.getIntentSender(), 1001,
+                                    new Intent(), Integer.valueOf(0),
+                                    Integer.valueOf(0), Integer.valueOf(0));
                         }
                     } else {
                         EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYFALIED, "create order failed");
                     }
                     ProgressUtil.getInstance(mActivity).closeProgressDialog();
                 } catch (Exception e) {
+                    ProgressUtil.getInstance(mActivity).closeProgressDialog();
                     e.printStackTrace();
                 }
 
@@ -432,10 +438,11 @@ public class EmaSdk {
                                 params.put("game_id", ResourceManager.getGameId(mActivity));
                                 params.put("product_id", productId);
                                 params.put("purchase_data", purchaseData);
-                                params.put("data_signnture", dataSignature);
+                                params.put("data_signnture", Base64.encodeToString(dataSignature.getBytes(), Base64.DEFAULT));//为了那个奇怪的+号
                                 params.put("order_id", sdkOrderId);
                                 params.put("token", userLoginInfo.getAccessToken());
 
+                                //gpa通知回调
                                 String s = new HttpRequestor().doPost(Url.payNotifyUrl(), params);
                                 L.e("payNotify", "result: " + s);
 
@@ -443,8 +450,11 @@ public class EmaSdk {
                                 if (notifyResutl.getInt("code") == 0) { //gpa购买成功
                                     EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYSUCCESS, "purchase successful");
 
-                                    //此处要不要马上消耗掉????
-                                    //消耗代码  if 金币类 就马上消耗
+                                    boolean consumeNow = EmaUser.getInstance().getUserOrderInfo().isConsumeNow();
+                                    L.e("consume_now",consumeNow+"!!");
+                                    if(consumeNow){
+                                        consumePurchase(purchaseToken);
+                                    }
 
                                 }
                             } catch (Exception e) {
