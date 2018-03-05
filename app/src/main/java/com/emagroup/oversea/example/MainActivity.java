@@ -6,26 +6,16 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.emagroup.oversea.sdk.EmaCallBackConst;
 import com.emagroup.oversea.sdk.EmaSDKListener;
 import com.emagroup.oversea.sdk.EmaSdk;
-import com.emagroup.oversea.sdk.HttpRequestor;
 import com.emagroup.oversea.sdk.ProgressUtil;
 import com.emagroup.oversea.sdk.ToastHelper;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.HashMap;
-
-import rx.Observable;
-import rx.Observer;
-import rx.Subscriber;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -166,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onDestroy();
     }
 
-    private void rxDemo() {
+/*    private void rxDemo() {
         Subscription stringObservable = Observable.create(new Observable.OnSubscribe<String>() {
             @Override
             public void call(Subscriber<? super String> subscriber) {
@@ -231,5 +221,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .subscribe(observer);
         subscribe.unsubscribe();
 
-    }
+    }*/
 }
