@@ -11,6 +11,7 @@ public class EmaConst {
 
 	//permission请求码
 	public static final int REQUEST_CODE_READPHONESTATE_PERMISSION = 20001;
+	public static final int REQUEST_CODE_ACCESSWIFISTATE_PERMISSION = 20002;
 
 	//---------------------------------------------------------------------------------广播控制菊花窗开关
 

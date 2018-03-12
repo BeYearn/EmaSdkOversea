@@ -512,6 +512,14 @@ public class EmaSdk {
                     Toast.makeText(mActivity, "STORAGE_PERMISSION Denied", Toast.LENGTH_SHORT).show();
                 }
                 break;
+            case EmaConst.REQUEST_CODE_ACCESSWIFISTATE_PERMISSION:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                } else {
+                    mHandler.sendEmptyMessage(EmaCallBackConst.INITFALIED);
+                    Toast.makeText(mActivity, "ACCESS_WIFISTATE_PERMISSION Denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 

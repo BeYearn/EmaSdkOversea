@@ -17,6 +17,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import static com.emagroup.oversea.sdk.EmaConst.REQUEST_CODE_ACCESSWIFISTATE_PERMISSION;
 import static com.emagroup.oversea.sdk.EmaConst.REQUEST_CODE_READPHONESTATE_PERMISSION;
 
 /**
@@ -137,6 +138,10 @@ public class ComUtils {
             int checkSelfPermission = activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE);
             if(checkSelfPermission!= PackageManager.PERMISSION_GRANTED){
                 activity.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},REQUEST_CODE_READPHONESTATE_PERMISSION);
+            }
+            int wifiStatePermission = activity.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE);
+            if(wifiStatePermission!=PackageManager.PERMISSION_GRANTED){
+                activity.requestPermissions(new String[]{Manifest.permission.ACCESS_WIFI_STATE},REQUEST_CODE_ACCESSWIFISTATE_PERMISSION);
             }
         } else {
         }
