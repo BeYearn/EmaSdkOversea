@@ -1,9 +1,8 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         minSdkVersion 17
@@ -23,10 +22,5 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:25.1.0'
-    //compile files('libs/rxandroid-1.1.0.jar')
-    //compile files('libs/rxjava-1.1.1.jar')
-
-
-    //compile 'com.google.android.gms:play-services-auth:9.0.0'
+    compile 'com.android.support:appcompat-v7:25.3.1'
 }

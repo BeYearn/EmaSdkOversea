@@ -12,14 +12,12 @@ import com.emagroup.oversea.sdk.EmaSDKListener;
 import com.emagroup.oversea.sdk.EmaSdk;
 import com.emagroup.oversea.sdk.ProgressUtil;
 import com.emagroup.oversea.sdk.ToastHelper;
-import com.google.android.gms.common.SignInButton;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private SignInButton btLogin;
+    private Button btLogin;
     private Button btPay;
     private Button btLogout;
     private Button btShowBar;
@@ -30,7 +28,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btEmShare;
     private Button btAgain_init;
     private Button bt_snap_shot;
-    private GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }, "Y[]D(s<swIB%X~2G");
 
 
-        btLogin = (SignInButton) findViewById(R.id.bt_login);
+        btLogin = (Button) findViewById(R.id.bt_login);
         btPay = (Button) findViewById(R.id.bt_pay);
         btLogout = (Button) findViewById(R.id.bt_logout);
         btShowBar = (Button) findViewById(R.id.bt_showbar);
