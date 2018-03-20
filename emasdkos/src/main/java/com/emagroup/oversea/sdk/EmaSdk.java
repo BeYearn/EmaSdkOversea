@@ -229,6 +229,14 @@ public class EmaSdk {
         });
     }
 
+    /**
+     * 登出
+     */
+    public void logout() {
+        EmaUser.getInstance().clearLoginInfo(mActivity.getApplicationContext());
+        EmaCallbackUtil.getInstance().onInitLoginCallback(EmaCallBackConst.LOGOUTSUCCESS,"logout successful");
+    }
+
 
     //===========================下面的是支付的相关方法====================================================================
 
@@ -254,7 +262,7 @@ public class EmaSdk {
                 params.put("quantity", payParams.get("quantity"));
                 params.put("product_id", payParams.get("product_id"));
                 params.put("role_id", payParams.get("role_id"));
-                params.put("area_id",payParams.get("area_id"));
+                params.put("area_id", payParams.get("area_id"));
 
                 params.put("device_id", ComUtils.getDEVICE_ID(mActivity.getApplicationContext()));
                 params.put("token", userLoginInfo.getAccessToken());
@@ -269,7 +277,7 @@ public class EmaSdk {
                     if (jsonObject.getInt("code") == 0) {
 
                         boolean consume_now = Boolean.parseBoolean(payParams.get("consume_now"));
-                        EmaUser.getInstance().setOrderInfo(jsonObject.getString("data"),consume_now);
+                        EmaUser.getInstance().setOrderInfo(jsonObject.getString("data"), consume_now);
 
                         Bundle buyIntentBundle = mService.getBuyIntent(3, mActivity.getPackageName()
                                 , EmaUser.getInstance().getUserOrderInfo().getProduct_id(), "inapp", EmaUser.getInstance().getUserOrderInfo().getOrder_id());
@@ -451,8 +459,8 @@ public class EmaSdk {
                                     EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYSUCCESS, "purchase successful");
 
                                     boolean consumeNow = EmaUser.getInstance().getUserOrderInfo().isConsumeNow();
-                                    L.e("consume_now",consumeNow+"!!");
-                                    if(consumeNow){
+                                    L.e("consume_now", consumeNow + "!!");
+                                    if (consumeNow) {
                                         consumePurchase(purchaseToken);
                                     }
 

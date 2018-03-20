@@ -40,12 +40,17 @@ public class EmaUser {
         }
     }
 
+    public void clearLoginInfo(Context context) {
+        mUserLoginInfo = null;
+        delateUserInfo(context);
+    }
+
     public OrderInfo getUserOrderInfo() {
         return mOrderInfo;
     }
 
-    public void clearOrderInfo(){
-        mOrderInfo=null;
+    public void clearOrderInfo() {
+        mOrderInfo = null;
     }
 
 
@@ -82,7 +87,7 @@ public class EmaUser {
     }
 
     public void setOrderInfo(String orderInfo, boolean consume_now) {
-        if(mOrderInfo==null){
+        if (mOrderInfo == null) {
             mOrderInfo = new OrderInfo();
         }
         try {
@@ -121,6 +126,16 @@ public class EmaUser {
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(userLoginInfo);
             oos.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void delateUserInfo(Context context) {
+        try {
+            FileOutputStream fos = context.openFileOutput(LOGIN_INFO_SAVE_NAME, Context.MODE_PRIVATE);
+            fos.write("".getBytes());
             fos.close();
         } catch (Exception e) {
             e.printStackTrace();

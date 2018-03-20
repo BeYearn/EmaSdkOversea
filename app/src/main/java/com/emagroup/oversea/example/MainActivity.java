@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case EmaCallBackConst.LOGINSUCCESS://登陆成功回调
                         ToastHelper.toast(MainActivity.this, "登陆成功");
                         break;
-                    case EmaCallBackConst.LOGINCANELL://登陆取消回调
+                    case EmaCallBackConst.LOGOUTSUCCESS://登成功回调
+                        ToastHelper.toast(MainActivity.this, decr);
                         break;
                 }
             }
@@ -94,6 +95,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 EmaSdk.getInstance().login();
 
                 break;
+            case R.id.bt_logout:
+                EmaSdk.getInstance().logout();
+                break;
 
             case R.id.bt_pay:
                 HashMap<String, String> payParams = new HashMap<>();
@@ -101,8 +105,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 payParams.put("quantity", "1");
                 payParams.put("product_id", "com.emagroups.wol.40");
                 payParams.put("role_id", "test001");
-                payParams.put("area_id","xxxx");
-                payParams.put("consume_now","true");  // 是否立刻消耗
+                payParams.put("area_id", "xxxx");
+                payParams.put("consume_now", "true");  // 是否立刻消耗
 
                 EmaSdk.getInstance().pay(payParams, new EmaSDKListener() {
                     @Override
