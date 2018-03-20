@@ -51,6 +51,10 @@ public class Url {
     }
 
 
+    public static String getProductsUrl(){
+        return serverUrl+"/sdk/default/get-products";
+    }
+
     public static String createOrderUrl(){
         return serverUrl+"/sdk/default/create-order";
     }

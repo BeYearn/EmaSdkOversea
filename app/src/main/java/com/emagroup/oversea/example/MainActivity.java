@@ -11,9 +11,11 @@ import com.emagroup.oversea.sdk.EmaCallBackConst;
 import com.emagroup.oversea.sdk.EmaSDKListener;
 import com.emagroup.oversea.sdk.EmaSdk;
 import com.emagroup.oversea.sdk.ProgressUtil;
+import com.emagroup.oversea.sdk.ThreadUtil;
 import com.emagroup.oversea.sdk.ToastHelper;
 
 import java.util.HashMap;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,8 +49,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     case EmaCallBackConst.LOGINSUCCESS://登陆成功回调
                         ToastHelper.toast(MainActivity.this, "登陆成功");
                         break;
-                    case EmaCallBackConst.LOGOUTSUCCESS://登成功回调
+                    case EmaCallBackConst.LOGOUTSUCCESS://登出成功回调
                         ToastHelper.toast(MainActivity.this, decr);
+                        break;
+                    case EmaCallBackConst.LOGINEXPIRED: //登录过期
+                        ToastHelper.toast(MainActivity.this,decr);
                         break;
                 }
             }
@@ -58,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btLogin = (Button) findViewById(R.id.bt_login);
         btPay = (Button) findViewById(R.id.bt_pay);
         btLogout = (Button) findViewById(R.id.bt_logout);
-        btShowBar = (Button) findViewById(R.id.bt_showbar);
+        btShowBar = (Button) findViewById(R.id.bt_get_product);
         btHideBar = (Button) findViewById(R.id.bt_hidebar);
         btSwichAccount = (Button) findViewById(R.id.bt_swichaccount);
         btUpGameInfo = (Button) findViewById(R.id.up_game_info);
@@ -124,7 +129,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 });
                 break;
+            case R.id.bt_get_product:
 
+                ThreadUtil.runInSubThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<String> productList = EmaSdk.getInstance().getProductList();
+                    }
+                });
+                break;
             case R.id.bt_emshare:
                 ProgressUtil.getInstance(MainActivity.this).openProgressDialog();
 

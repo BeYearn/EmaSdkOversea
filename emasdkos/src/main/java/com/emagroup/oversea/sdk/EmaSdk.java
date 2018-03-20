@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.android.vending.billing.IInAppBillingService;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -49,6 +50,10 @@ public class EmaSdk {
     }
 
     private EmaSdk() {
+    }
+
+    public Activity getActivity() {
+        return mActivity;
     }
 
     public static EmaSdk getInstance() {
@@ -234,17 +239,51 @@ public class EmaSdk {
      */
     public void logout() {
         EmaUser.getInstance().clearLoginInfo(mActivity.getApplicationContext());
-        EmaCallbackUtil.getInstance().onInitLoginCallback(EmaCallBackConst.LOGOUTSUCCESS,"logout successful");
+        EmaCallbackUtil.getInstance().onInitLoginCallback(EmaCallBackConst.LOGOUTSUCCESS, "logout successful");
     }
 
 
     //===========================下面的是支付的相关方法====================================================================
 
+
+    /**
+     * 耗时请求需要在子线程请求
+     * 获取在售商品列表
+     * {"productId":"com.emagroups.wol.40","type":"inapp","price":"US$0.99","price_amount_micros":990000,
+     * "price_currency_code":"USD","title":"测试商品1 (Warriors of Light)","description":"第一个测试商品"}
+     */
+    public List<String> getProductList() {
+        final ArrayList<String> productIdList = new ArrayList<>();
+
+        HashMap<String, String> urlParams = new HashMap<>();
+        urlParams.put("client_id", getClientId());
+        urlParams.put("op_id", ResourceManager.getOpId(mActivity));
+        urlParams.put("game_id", ResourceManager.getGameId(mActivity));
+        urlParams.put("timestamp", ComUtils.getTimestamp());
+        urlParams.put("sign", ComUtils.getSign(urlParams));
+        try {
+            String result = new HttpRequestor().doPost(Url.getProductsUrl(), urlParams);
+            JSONObject jsonObject = new JSONObject(result);
+            if (jsonObject.getInt("code") == 0) {
+                JSONArray productIdArray = jsonObject.getJSONArray("data");
+                for (int i = 0; i < productIdArray.length(); i++) {
+                    productIdList.add(productIdArray.getString(i));
+                }
+                List<String> skuDetailList = getSkuDetail(productIdList);
+                return skuDetailList;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
     public void pay(final Map<String, String> payParams, EmaSDKListener payListener) {
 
         boolean login = EmaUser.getInstance().isLogin();
-        if(!login){
-            ToastHelper.toast(mActivity,"please login first !");
+        if (!login) {
+            ToastHelper.toast(mActivity, "please login first !");
             return;
         }
 
@@ -312,15 +351,36 @@ public class EmaSdk {
         });
     }
 
+    /**
+     * 查询可供购买的商品详情
+     * 请不要在主线程上调用该方法。 调用此方法会触发网络请求，进而阻塞主线程。 请创建单独的线程并从该线程内部调用 getSkuDetails 方法。
+     */
+    private List<String> getSkuDetail(List<String> productIdList) {
+
+        ArrayList<String> skuList = new ArrayList<>(productIdList);
+        Bundle querySkus = new Bundle();
+        querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
+        try {
+            Bundle skuDetails = mService.getSkuDetails(3, mActivity.getPackageName(), "inapp", querySkus);
+
+            int response = skuDetails.getInt("RESPONSE_CODE");
+            if (response == 0) {
+                ArrayList<String> responseList = skuDetails.getStringArrayList("DETAILS_LIST");
+                return responseList;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     /**
-     * 查询可供购买的商品
+     * 查询单个商品的详情
      * 请不要在主线程上调用 getSkuDetails 方法。 调用此方法会触发网络请求，进而阻塞主线程。 请创建单独的线程并从该线程内部调用 getSkuDetails 方法。
      */
-    public String getSkuDetail(String productId) {
+    private String getSkuDetail(String productId) {
 
-        ArrayList<String> skuList = new ArrayList<String>();
-        //skuList.add("gas");
+        ArrayList<String> skuList = new ArrayList<>();
         skuList.add("com.emagroups.wol.40");   //商品id
         Bundle querySkus = new Bundle();
         querySkus.putStringArrayList("ITEM_ID_LIST", skuList);

@@ -19,11 +19,12 @@ public class EmaCallBackConst {
 	public final static int LOGINCANELL = 202;//登录取消
 	public final static int LOGINSWITCHSUCCESS = 203;//切换账号，退出当前账号成功
 	public final static int LOGINSWITCHCANELL = 204;//切换账号，退出当前账号失败
+	public final static int LOGINEXPIRED = 205; //登录过期
 	
 	//账号状态登出 300开始
 	public final static int LOGOUTSUCCESS = 300;//	登出成功
 	public final static int LOGOUTFALIED = 301;//登出失败
-	
+
 	//支付状态 400开始
 	public final static int PAYSUCCESS = 400;//支付成功
 	public final static int PAYFALIED = 401;//支付失败
