@@ -242,6 +242,11 @@ public class EmaSdk {
 
     public void pay(final Map<String, String> payParams, EmaSDKListener payListener) {
 
+        boolean login = EmaUser.getInstance().isLogin();
+        if(!login){
+            ToastHelper.toast(mActivity,"please login first !");
+            return;
+        }
 
         EmaCallbackUtil.getInstance().setPayListener(payListener);
 

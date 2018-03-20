@@ -20,6 +20,7 @@ public class EmaUser {
     private UserLoginInfo mUserLoginInfo;
     public static final String LOGIN_INFO_SAVE_NAME = "userLoginInfo";
     private OrderInfo mOrderInfo;
+    private boolean mIsLogin = false;
 
     private EmaUser() {
     }
@@ -157,5 +158,15 @@ public class EmaUser {
         return null;
     }
 
+    /**
+     * 是否登陆
+     * @param b
+     */
+    public void setIsLogin(boolean b) {
+        this.mIsLogin = b;
+    }
 
+    public boolean isLogin() {
+        return mIsLogin;
+    }
 }

@@ -29,7 +29,10 @@ public class EmaCallbackUtil {
 
         switch (msgCode) {
             case EmaCallBackConst.LOGINSUCCESS:
-
+                EmaUser.getInstance().setIsLogin(true);
+                break;
+            case EmaCallBackConst.LOGOUTSUCCESS:
+                EmaUser.getInstance().setIsLogin(false);
                 break;
         }
         mInitLoginListener.onCallBack(msgCode, msgStr);
