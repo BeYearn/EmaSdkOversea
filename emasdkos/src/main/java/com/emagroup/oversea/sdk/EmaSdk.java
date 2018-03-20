@@ -247,8 +247,9 @@ public class EmaSdk {
 
 
     /**
-     * 耗时请求需要在子线程请求
      * 获取在售商品列表
+     * <p>
+     * 耗时请求需要在子线程请求
      * {"productId":"com.emagroups.wol.40","type":"inapp","price":"US$0.99","price_amount_micros":990000,
      * "price_currency_code":"USD","title":"测试商品1 (Warriors of Light)","description":"第一个测试商品"}
      */
@@ -440,7 +441,7 @@ public class EmaSdk {
     }
 
     /**
-     * 测试  专门用于消耗已有商品
+     * 方便测试用  专门用于消耗已有商品
      */
     public void consumeHad() {
 
