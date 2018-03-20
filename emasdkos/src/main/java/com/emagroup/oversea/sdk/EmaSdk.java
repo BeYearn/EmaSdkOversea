@@ -267,7 +267,7 @@ public class EmaSdk {
                 params.put("quantity", payParams.get("quantity"));
                 params.put("product_id", payParams.get("product_id"));
                 params.put("role_id", payParams.get("role_id"));
-                params.put("area_id", payParams.get("area_id"));
+                params.put("custom_data", payParams.get("custom_data"));
 
                 params.put("device_id", ComUtils.getDEVICE_ID(mActivity.getApplicationContext()));
                 params.put("token", userLoginInfo.getAccessToken());

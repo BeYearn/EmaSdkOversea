@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 payParams.put("quantity", "1");
                 payParams.put("product_id", "com.emagroups.wol.40");
                 payParams.put("role_id", "test001");
-                payParams.put("area_id", "xxxx");
+                payParams.put("custom_data", "1;2;528280977428;197568495617;");
                 payParams.put("consume_now", "true");  // 是否立刻消耗
 
                 EmaSdk.getInstance().pay(payParams, new EmaSDKListener() {
