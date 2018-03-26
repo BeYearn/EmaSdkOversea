@@ -10,10 +10,13 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -30,7 +33,12 @@ public class ComUtils {
 
         String timestamp = null;
         try {
-            timestamp = new HttpRequestor().doGet(Url.timeStampUrl(), null);
+            HashMap<String, String> param = new HashMap<>();
+            param.put("timestamp", "1");
+            String timestampStr = new HttpRequestor().doGet(Url.timeStampUrl(), param);
+            JSONObject jsonObject = new JSONObject(timestampStr);
+            JSONObject data = jsonObject.getJSONObject("data");
+            timestamp = data.getString("timestamp");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -136,12 +144,12 @@ public class ComUtils {
     public static void requestPermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int checkSelfPermission = activity.checkSelfPermission(Manifest.permission.READ_PHONE_STATE);
-            if(checkSelfPermission!= PackageManager.PERMISSION_GRANTED){
-                activity.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE},REQUEST_CODE_READPHONESTATE_PERMISSION);
+            if (checkSelfPermission != PackageManager.PERMISSION_GRANTED) {
+                activity.requestPermissions(new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_CODE_READPHONESTATE_PERMISSION);
             }
             int wifiStatePermission = activity.checkSelfPermission(Manifest.permission.ACCESS_WIFI_STATE);
-            if(wifiStatePermission!=PackageManager.PERMISSION_GRANTED){
-                activity.requestPermissions(new String[]{Manifest.permission.ACCESS_WIFI_STATE},REQUEST_CODE_ACCESSWIFISTATE_PERMISSION);
+            if (wifiStatePermission != PackageManager.PERMISSION_GRANTED) {
+                activity.requestPermissions(new String[]{Manifest.permission.ACCESS_WIFI_STATE}, REQUEST_CODE_ACCESSWIFISTATE_PERMISSION);
             }
         } else {
         }

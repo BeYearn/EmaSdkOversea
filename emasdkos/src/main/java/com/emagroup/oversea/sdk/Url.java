@@ -25,7 +25,8 @@ public class Url {
 
 
     public static String timeStampUrl(){
-        return serverUrl+"/client/get-timestamp";
+        //return serverUrl+"/client/get-timestamp";
+        return "https://api.ema.games/server-info";
     }
 
     public static String initUrl(){
