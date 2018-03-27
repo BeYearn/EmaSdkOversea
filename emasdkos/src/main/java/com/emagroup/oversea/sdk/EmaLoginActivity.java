@@ -1,9 +1,9 @@
 package com.emagroup.oversea.sdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
@@ -18,7 +18,7 @@ import android.widget.ProgressBar;
  * Created by beyearn on 2018/2/26.
  */
 
-public class EmaLoginActivity extends AppCompatActivity {
+public class EmaLoginActivity extends Activity {
 
     private ResourceManager mResourceManager;
     private WebView mWebView;
