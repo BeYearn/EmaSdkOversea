@@ -3,20 +3,21 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
     defaultConfig {
-        applicationId "com.emagroup.oversea.sdktest"
+        //applicationId "com.emagroup.oversea.sdktest"
+        applicationId "com.emagroups.wolnew"
         minSdkVersion 17
         targetSdkVersion 25
-        versionCode 3
-        versionName "1.3"
+        versionCode 1
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
     signingConfigs {
-        kom {
-            keyAlias 'kom'
-            keyPassword '000000'
-            storeFile file('./appsign/kom.keystore')
-            storePassword '000000'
+        kol {
+            keyAlias 'kol'
+            keyPassword 'ema123'
+            storeFile file('./appsign/kol.keystore')
+            storePassword 'ema123'
         }
     }
 
@@ -25,9 +26,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-        kom {
-            debuggable true
-            signingConfig signingConfigs.kom
+        kol {
+            debuggable false
+            signingConfig signingConfigs.kol
         }
     }
 
@@ -39,3 +40,13 @@ dependencies {
     compile project(':emasdkos')
     compile 'com.android.support:appcompat-v7:25.3.1'
 }
+
+/**
+ *googleplay支付注意
+ * 1. versioncode versionname 上传的包和你测试的包一致
+ * 2. productid 必须hegoogle后台设置的一致
+ * 3.支付完成校验的key必须和google后台的一直
+ * 4.注意加入测试人员
+ * 5.包名一致
+ * 6.签名一致
+ */
