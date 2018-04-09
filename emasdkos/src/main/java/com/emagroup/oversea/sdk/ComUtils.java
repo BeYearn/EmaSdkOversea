@@ -35,7 +35,7 @@ public class ComUtils {
         try {
             HashMap<String, String> param = new HashMap<>();
             param.put("timestamp", "1");
-            String timestampStr = new HttpRequestor().doGet(Url.timeStampUrl(), param);
+            String timestampStr = new HttpRequestor().doPost(Url.timeStampUrl(), param);
             JSONObject jsonObject = new JSONObject(timestampStr);
             JSONObject data = jsonObject.getJSONObject("data");
             timestamp = data.getString("timestamp");

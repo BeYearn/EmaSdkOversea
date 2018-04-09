@@ -31,6 +31,7 @@ public class ProgressUtil {
                         progressDialog = new ProgressDialog(mActivity);
                         progressDialog.setMessage("请稍候...");
                         progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.setCancelable(false);
                     }
 
                     if (EmaConst.EMA_BC_PROGRESS_START.equals(progressState)) {
