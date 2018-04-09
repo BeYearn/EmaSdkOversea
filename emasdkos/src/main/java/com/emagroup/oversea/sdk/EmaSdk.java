@@ -362,13 +362,19 @@ public class EmaSdk {
         Bundle querySkus = new Bundle();
         querySkus.putStringArrayList("ITEM_ID_LIST", skuList);
         try {
-            Bundle skuDetails = mService.getSkuDetails(3, mActivity.getPackageName(), "inapp", querySkus);
+            Bundle skuDetailsInapp = mService.getSkuDetails(3, mActivity.getPackageName(), "inapp", querySkus);
+            Bundle skuDetailsSubs = mService.getSkuDetails(3, mActivity.getPackageName(), "subs", querySkus);
 
-            int response = skuDetails.getInt("RESPONSE_CODE");
-            if (response == 0) {
-                ArrayList<String> responseList = skuDetails.getStringArrayList("DETAILS_LIST");
-                return responseList;
+            ArrayList<String> responseList = new ArrayList<>();
+            int responseInapp = skuDetailsInapp.getInt("RESPONSE_CODE");
+            int responseSubs = skuDetailsSubs.getInt("RESPONSE_CODE");
+            if (responseInapp == 0) {
+                responseList.addAll(skuDetailsInapp.getStringArrayList("DETAILS_LIST"));
             }
+            if (responseSubs == 0) {
+                responseList.addAll(skuDetailsSubs.getStringArrayList("DETAILS_LIST"));
+            }
+            return responseList;
         } catch (Exception e) {
             e.printStackTrace();
         }
