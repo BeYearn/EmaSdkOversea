@@ -93,8 +93,14 @@ public class EmaSdk {
                     break;
                 case EmaConst.EMA_LOGIN_URL_DONE:
                     Intent intent = new Intent(mActivity, EmaLoginActivity.class);
-                    intent.putExtra("loginUrl", (String) msg.obj);
+                    intent.putExtra("webUrl", (String) msg.obj);
                     mActivity.startActivity(intent);
+                    break;
+                case EmaConst.EMA_ACCOUNT_UPGRADE_URL_DONE:
+                    Intent intent2 = new Intent(mActivity, EmaLoginActivity.class);
+                    intent2.putExtra("webUrl", (String) msg.obj);
+                    intent2.putExtra("showCloseView",true);
+                    mActivity.startActivity(intent2);
                     break;
             }
         }
@@ -204,25 +210,8 @@ public class EmaSdk {
                 urlParams.put("sign", ComUtils.getSign(urlParams));
 
 
-                StringBuilder paramsBuilder = new StringBuilder();
-                if (urlParams != null) {
-                    Iterator iterator = urlParams.keySet().iterator();
-                    String key = null;
-                    String value = null;
-                    while (iterator.hasNext()) {
-                        key = (String) iterator.next();
-                        if (urlParams.get(key) != null) {
-                            value = (String) urlParams.get(key);
-                        } else {
-                            value = "";
-                        }
-                        paramsBuilder.append(key).append("=").append(value);
-                        if (iterator.hasNext()) {
-                            paramsBuilder.append("&");
-                        }
-                    }
-                }
-                String loginUrl = Url.indexUrl() + "?" + paramsBuilder.toString();
+                String getParams = ComUtils.buildGetParams(urlParams);
+                String loginUrl = Url.indexUrl() + "?" + getParams;
 
                 Message message = Message.obtain();
                 message.what = EmaConst.EMA_LOGIN_URL_DONE;
@@ -242,6 +231,33 @@ public class EmaSdk {
         EmaCallbackUtil.getInstance().onInitLoginCallback(EmaCallBackConst.LOGOUTSUCCESS, "logout successful");
     }
 
+    /**
+     * 显示账户升级页面
+     */
+    public void accountUpgrade() {
+        ThreadUtil.runInSubThread(new Runnable() {
+            @Override
+            public void run() {
+                UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(mActivity.getApplicationContext());
+                HashMap<String, String> urlParams = new HashMap<>();
+                urlParams.put("client_id", getClientId());
+                urlParams.put("op_id", ResourceManager.getOpId(mActivity));
+                urlParams.put("game_id", ResourceManager.getGameId(mActivity));
+                urlParams.put("account", userLoginInfo.getAccount()); //游客id  同deviceid
+                urlParams.put("token", userLoginInfo.getAccessToken());
+                urlParams.put("timestamp", ComUtils.getTimestamp());
+                urlParams.put("sign", ComUtils.getSign(urlParams));
+
+                String getParams = ComUtils.buildGetParams(urlParams);
+                String upgradeUrl = Url.accountUpgrade() + "?" + getParams;
+
+                Message message = Message.obtain();
+                message.what = EmaConst.EMA_ACCOUNT_UPGRADE_URL_DONE;
+                message.obj = upgradeUrl;
+                mHandler.sendMessage(message);
+            }
+        });
+    }
 
     //===========================下面的是支付的相关方法====================================================================
 

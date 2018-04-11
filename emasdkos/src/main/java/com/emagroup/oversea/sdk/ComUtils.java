@@ -17,6 +17,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -153,5 +154,27 @@ public class ComUtils {
             }
         } else {
         }
+    }
+
+    public static String buildGetParams(Map<String,String> params){
+        StringBuilder paramsBuilder = new StringBuilder();
+        if (params != null) {
+            Iterator iterator = params.keySet().iterator();
+            String key = null;
+            String value = null;
+            while (iterator.hasNext()) {
+                key = (String) iterator.next();
+                if (params.get(key) != null) {
+                    value = (String) params.get(key);
+                } else {
+                    value = "";
+                }
+                paramsBuilder.append(key).append("=").append(value);
+                if (iterator.hasNext()) {
+                    paramsBuilder.append("&");
+                }
+            }
+        }
+        return paramsBuilder.toString();
     }
 }

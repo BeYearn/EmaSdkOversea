@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btPay;
     private Button btLogout;
     private Button btShowBar;
-    private Button btHideBar;
+    private Button btAccountUpgrade;
     private Button btSwichAccount;
     private Button btUpGameInfo;
     private Button btOpenWebview;
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         ToastHelper.toast(MainActivity.this, decr);
                         break;
                     case EmaCallBackConst.LOGINEXPIRED: //登录过期
-                        ToastHelper.toast(MainActivity.this,decr);
+                        ToastHelper.toast(MainActivity.this, decr);
                         break;
                 }
             }
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btPay = (Button) findViewById(R.id.bt_pay);
         btLogout = (Button) findViewById(R.id.bt_logout);
         btShowBar = (Button) findViewById(R.id.bt_get_product);
-        btHideBar = (Button) findViewById(R.id.bt_hidebar);
+        btAccountUpgrade = (Button) findViewById(R.id.bt_account_upgrade);
         btSwichAccount = (Button) findViewById(R.id.bt_swichaccount);
         btUpGameInfo = (Button) findViewById(R.id.up_game_info);
         btOpenWebview = (Button) findViewById(R.id.bt_open_webview);
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btPay.setOnClickListener(this);
         btLogout.setOnClickListener(this);
         btShowBar.setOnClickListener(this);
-        btHideBar.setOnClickListener(this);
+        btAccountUpgrade.setOnClickListener(this);
         btSwichAccount.setOnClickListener(this);
         btUpGameInfo.setOnClickListener(this);
         btOpenWebview.setOnClickListener(this);
@@ -98,6 +98,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.bt_logout:
                 EmaSdk.getInstance().logout();
+                break;
+
+            case R.id.bt_account_upgrade:
+                EmaSdk.getInstance().accountUpgrade();
                 break;
 
             case R.id.bt_pay:
@@ -158,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,String[] permissions,int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         EmaSdk.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }

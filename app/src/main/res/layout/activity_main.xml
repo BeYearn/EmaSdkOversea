@@ -28,10 +28,10 @@
             android:text="获取可购商品" />
 
         <Button
-            android:id="@+id/bt_hidebar"
+            android:id="@+id/bt_account_upgrade"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="点击隐藏bar" />
+            android:text="升级账户" />
 
         <Button
             android:id="@+id/bt_pay"

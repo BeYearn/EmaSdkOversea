@@ -17,6 +17,9 @@ import android.widget.TextView;
 
 /**
  * Created by beyearn on 2018/2/26.
+ *
+ * 本来用来登陆页面
+ * 现在也顺便用来显示升级账户的页面
  */
 
 public class EmaLoginActivity extends Activity implements View.OnClickListener {
@@ -25,6 +28,7 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
     private WebView mWebView;
     private ProgressBar mProgressBar;
     private TextView mTvBack;
+    private TextView mTvClose;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,14 +42,16 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
         mWebView = (WebView) findViewById(mResourceManager.getViewId("wv_login"));
         mProgressBar = (ProgressBar) findViewById(mResourceManager.getViewId("wv_progressbar"));
         mTvBack = (TextView) findViewById(mResourceManager.getViewId("tv_back"));
+        mTvClose = (TextView) findViewById(mResourceManager.getViewId("tv_close"));
         mTvBack.setOnClickListener(this);
+        mTvClose.setOnClickListener(this);
 
         Intent intent = getIntent();
-        String loginUrl = intent.getStringExtra("loginUrl");
-        L.e("loginurl", loginUrl);
+        String loginUrl = intent.getStringExtra("webUrl");
+        L.e("webUrl", loginUrl);
+        boolean showCloseView = intent.getBooleanExtra("showCloseView",false);
 
-        initView();
-
+        initView(showCloseView);
         mWebView.loadUrl(loginUrl);
 
     }
@@ -55,6 +61,8 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
         int viewId = v.getId();
         if (viewId == mResourceManager.getViewId("tv_back")) {
             mWebView.goBack();
+        }else if(viewId==mResourceManager.getViewId("tv_close")){
+            this.finish();
         }
     }
 
@@ -83,7 +91,7 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
     }
 
 
-    private void initView() {
+    private void initView(boolean showCloseView) {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new JavaScriptinterface(this), "webview");
         mWebView.getSettings().setSupportZoom(true);
@@ -127,6 +135,11 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
             }
         });
 
+        if(showCloseView){
+            mTvClose.setVisibility(View.VISIBLE);
+        }else {
+            mTvClose.setVisibility(View.GONE);
+        }
 
     }
 

@@ -91,29 +91,32 @@ public class EmaCallbackUtil {
                                 int code = jsonObject.getInt("code");
                                 if (code == 0) {
                                     //token有效
-                                }else {
+                                } else {
                                     //登录过期
-                                    mInitLoginListener.onCallBack(EmaCallBackConst.LOGINEXPIRED,"login expired");
+                                    mInitLoginListener.onCallBack(EmaCallBackConst.LOGINEXPIRED, "login expired");
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                        }else {
+                        } else {
                             //登录过期
-                            mInitLoginListener.onCallBack(EmaCallBackConst.LOGINEXPIRED,"login expired");
+                            mInitLoginListener.onCallBack(EmaCallBackConst.LOGINEXPIRED, "login expired");
                         }
                     }
                 });
             }
         };
 
-        mTimer.schedule(timerTask,60*1000);
+        mTimer.schedule(timerTask, 60 * 1000);
     }
+
     /**
      * 停止心跳
      */
-    public void stopCheckToken(){
-        mTimer.cancel();
+    public void stopCheckToken() {
+        if (mTimer != null) {
+            mTimer.cancel();
+        }
     }
 
 }

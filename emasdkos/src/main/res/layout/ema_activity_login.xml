@@ -27,7 +27,19 @@
             android:layout_alignRight="@id/wv_login"
             android:layout_margin="10dp"
             android:text="BACK"
-            android:textColor="@android:color/holo_blue_light"
+            android:textColor="@android:color/holo_blue_dark"
             android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tv_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/wv_login"
+            android:layout_alignTop="@id/wv_login"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="8dp"
+            android:background="@android:drawable/ic_menu_close_clear_cancel"
+            android:textColor="@android:color/holo_blue_dark"
+            android:textSize="25sp" />
     </RelativeLayout>
 </LinearLayout>

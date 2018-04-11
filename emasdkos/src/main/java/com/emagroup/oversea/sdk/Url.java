@@ -51,6 +51,9 @@ public class Url {
         return serverUrl+"/client/index";
     }
 
+    public static String accountUpgrade(){
+        return serverUrl+"/server/upgrade";
+    }
 
     public static String getProductsUrl(){
         return serverUrl+"/sdk/default/get-products";
