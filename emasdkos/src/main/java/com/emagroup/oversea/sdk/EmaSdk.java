@@ -99,7 +99,7 @@ public class EmaSdk {
                 case EmaConst.EMA_ACCOUNT_UPGRADE_URL_DONE:
                     Intent intent2 = new Intent(mActivity, EmaLoginActivity.class);
                     intent2.putExtra("webUrl", (String) msg.obj);
-                    intent2.putExtra("showCloseView",true);
+                    intent2.putExtra("showCloseView", true);
                     mActivity.startActivity(intent2);
                     break;
             }
@@ -316,7 +316,7 @@ public class EmaSdk {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("client_id", getClientId());
                 params.put("account", userLoginInfo.getAccount());
-                params.put("op_id", ResourceManager.getOpId(mActivity));
+                params.put("op_id", ResourceManager.getChannelId(mActivity));  //只有这里的op_id填的是清单中CHANNEL值
                 params.put("game_id", ResourceManager.getGameId(mActivity));
 
                 params.put("server_id", payParams.get("server_id"));

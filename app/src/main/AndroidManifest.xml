@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="com.android.vending.BILLING" />
-    
+
 
     <application
         android:allowBackup="true"
@@ -31,13 +31,16 @@
             android:name="EMA_OP_ID"
             android:value="ID2106" />
         <meta-data
+            android:name="CHANNEL"
+            android:value="ID2106" />
+        <meta-data
             android:name="EMA_WHICH_ENVI"
-            android:value="production"/>
+            android:value="production" />
 
 
         <activity
-            android:theme="@style/Base.Theme.AppCompat.Light.Dialog"
-            android:name="com.emagroup.oversea.sdk.EmaLoginActivity" />
+            android:name="com.emagroup.oversea.sdk.EmaLoginActivity"
+            android:theme="@style/Base.Theme.AppCompat.Light.Dialog" />
     </application>
 
 </manifest>

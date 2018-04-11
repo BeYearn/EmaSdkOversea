@@ -1,5 +1,6 @@
 package com.emagroup.oversea.sdk;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
@@ -37,16 +38,17 @@ public class ResourceManager {
 
     /**
      * 获取某种资源ID
-     * @param resourceName  ema_btn_cancel
-     * @param type    id   style   ema_fragment_login
+     *
+     * @param resourceName ema_btn_cancel
+     * @param type         id   style   ema_fragment_login
      */
-    public int getIdentifier(String resourceName, String type){
+    public int getIdentifier(String resourceName, String type) {
         return mResources.getIdentifier(resourceName, type, mPackageName);
     }
 
 
-    public int getViewId(String recourceName){
-        return mResources.getIdentifier(recourceName,"id",mPackageName);
+    public int getViewId(String recourceName) {
+        return mResources.getIdentifier(recourceName, "id", mPackageName);
     }
 
     /**
@@ -73,21 +75,32 @@ public class ResourceManager {
 
     /**
      * 由布局文件名字获得实例化出来的view（暂时不考虑横竖屏）
-     * @param resourceName  ema_login_succdialog
+     *
+     * @param resourceName ema_login_succdialog
      */
-    public int getLayoutId(String resourceName){
-        return  mResources.getIdentifier(resourceName, "layout", mPackageName);
+    public int getLayoutId(String resourceName) {
+        return mResources.getIdentifier(resourceName, "layout", mPackageName);
     }
 
 
-    public static String getOpId(Context context){
-        return getStringFromMetaData(context,"EMA_OP_ID").substring(2);
+    public static String getOpId(Context context) {
+        return getStringFromMetaData(context, "EMA_OP_ID").substring(2);
     }
 
-    public static String getGameId(Context context){
-        return getStringFromMetaData(context,"EMA_GAME_ID").substring(2);
+    public static String getGameId(Context context) {
+        return getStringFromMetaData(context, "EMA_GAME_ID").substring(2);
     }
-    public static String getEnvi(Context context){
-        return getStringFromMetaData(context,"EMA_WHICH_ENVI");
+
+    public static String getEnvi(Context context) {
+        return getStringFromMetaData(context, "EMA_WHICH_ENVI");
+    }
+
+    public static String getChannelId(Context context) {
+        String channel = getStringFromMetaData(context, "CHANNEL");
+        if (channel != null) {
+            return channel.substring(2);
+        } else {
+            return getOpId(context);
+        }
     }
 }
