@@ -1,18 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:layout_width="300dp"
+    android:layout_height="280dp"
     android:orientation="vertical">
 
     <ProgressBar
         android:id="@+id/wv_progressbar"
         style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
-        android:layout_height="5dp" />
-    <WebView
-        android:id="@+id/wv_login"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="3dp" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <WebView
+            android:id="@+id/wv_login"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/wv_login"
+            android:layout_alignRight="@id/wv_login"
+            android:layout_margin="10dp"
+            android:text="BACK"
+            android:textColor="@android:color/holo_blue_light"
+            android:visibility="gone" />
+    </RelativeLayout>
 </LinearLayout>

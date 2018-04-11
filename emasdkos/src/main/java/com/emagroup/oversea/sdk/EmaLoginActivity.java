@@ -13,16 +13,18 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 /**
  * Created by beyearn on 2018/2/26.
  */
 
-public class EmaLoginActivity extends Activity {
+public class EmaLoginActivity extends Activity implements View.OnClickListener {
 
     private ResourceManager mResourceManager;
     private WebView mWebView;
     private ProgressBar mProgressBar;
+    private TextView mTvBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +32,13 @@ public class EmaLoginActivity extends Activity {
         mResourceManager = ResourceManager.getInstance(this.getApplicationContext());
         setContentView(mResourceManager.getLayoutId("ema_activity_login"));
 
+        setFinishOnTouchOutside(false);
+        //getWindow().setGravity(Gravity.CENTER);
+
         mWebView = (WebView) findViewById(mResourceManager.getViewId("wv_login"));
         mProgressBar = (ProgressBar) findViewById(mResourceManager.getViewId("wv_progressbar"));
-
+        mTvBack = (TextView) findViewById(mResourceManager.getViewId("tv_back"));
+        mTvBack.setOnClickListener(this);
 
         Intent intent = getIntent();
         String loginUrl = intent.getStringExtra("loginUrl");
@@ -43,6 +49,15 @@ public class EmaLoginActivity extends Activity {
         mWebView.loadUrl(loginUrl);
 
     }
+
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+        if (viewId == mResourceManager.getViewId("tv_back")) {
+            mWebView.goBack();
+        }
+    }
+
 
     /**
      * 与js交互时用到的方法对象，在js里直接调用
@@ -72,24 +87,39 @@ public class EmaLoginActivity extends Activity {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new JavaScriptinterface(this), "webview");
         mWebView.getSettings().setSupportZoom(true);
+        mWebView.getSettings().setBuiltInZoomControls(true);
+        mWebView.getSettings().setDisplayZoomControls(false);
         mWebView.getSettings().setUseWideViewPort(true);
         mWebView.getSettings().setLoadWithOverviewMode(true);
         mWebView.getSettings().setDefaultZoom(WebSettings.ZoomDensity.MEDIUM);
-        mWebView.getSettings().setBuiltInZoomControls(true);
         //mWebView.getSettings().setTextZoom(75);
         mWebView.getSettings().setLoadsImagesAutomatically(true);
         mWebView.getSettings().setAllowUniversalAccessFromFileURLs(true);//设置是否允许通过file url加载的Javascript可以访问其他的源，包括其他的文件和http,https等其他的源
         mWebView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
         mWebView.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         mWebView.getSettings().setDomStorageEnabled(true);
-        mWebView.setWebViewClient(new WebViewClient());
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                return false;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                if (mWebView.canGoBack()) {
+                    mTvBack.setVisibility(View.VISIBLE);
+                } else {
+                    mTvBack.setVisibility(View.GONE);
+                }
+            }
+        });
         mWebView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
                 if (newProgress == 100) {
                     mProgressBar.setVisibility(View.GONE);
                 } else {
-                    if (View.INVISIBLE == mProgressBar.getVisibility()) {
+                    if (View.VISIBLE != mProgressBar.getVisibility()) {
                         mProgressBar.setVisibility(View.VISIBLE);
                     }
                     mProgressBar.setProgress(newProgress);
