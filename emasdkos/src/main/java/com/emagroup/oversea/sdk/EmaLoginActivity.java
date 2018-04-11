@@ -3,8 +3,10 @@ package com.emagroup.oversea.sdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.CookieSyncManager;
 import android.webkit.JavascriptInterface;
@@ -17,7 +19,7 @@ import android.widget.TextView;
 
 /**
  * Created by beyearn on 2018/2/26.
- *
+ * <p>
  * 本来用来登陆页面
  * 现在也顺便用来显示升级账户的页面
  */
@@ -33,8 +35,25 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mResourceManager = ResourceManager.getInstance(this.getApplicationContext());
         setContentView(mResourceManager.getLayoutId("ema_activity_login"));
+
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE;
+            decorView.setSystemUiVisibility(uiOptions);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+        }
 
         setFinishOnTouchOutside(false);
         //getWindow().setGravity(Gravity.CENTER);
@@ -49,7 +68,7 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
         Intent intent = getIntent();
         String loginUrl = intent.getStringExtra("webUrl");
         L.e("webUrl", loginUrl);
-        boolean showCloseView = intent.getBooleanExtra("showCloseView",false);
+        boolean showCloseView = intent.getBooleanExtra("showCloseView", false);
 
         initView(showCloseView);
         mWebView.loadUrl(loginUrl);
@@ -61,7 +80,7 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
         int viewId = v.getId();
         if (viewId == mResourceManager.getViewId("tv_back")) {
             mWebView.goBack();
-        }else if(viewId==mResourceManager.getViewId("tv_close")){
+        } else if (viewId == mResourceManager.getViewId("tv_close")) {
             this.finish();
         }
     }
@@ -135,9 +154,9 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
             }
         });
 
-        if(showCloseView){
+        if (showCloseView) {
             mTvClose.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mTvClose.setVisibility(View.GONE);
         }
 

@@ -15,7 +15,9 @@
         android:label="sdk_overseas"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -40,6 +42,7 @@
 
         <activity
             android:name="com.emagroup.oversea.sdk.EmaLoginActivity"
+            android:screenOrientation="behind"
             android:theme="@style/Base.Theme.AppCompat.Light.Dialog" />
     </application>
 
