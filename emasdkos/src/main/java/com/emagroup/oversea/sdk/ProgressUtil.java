@@ -28,7 +28,7 @@ public class ProgressUtil {
                     Log.e("dialogBCReciver", progressState);
 
                     if (null == progressDialog) {
-                        progressDialog = new ProgressDialog(mActivity);
+                        progressDialog = new EmaProgressDialog(mActivity);
                         progressDialog.setMessage("请稍候...");
                         progressDialog.setCanceledOnTouchOutside(false);
                         progressDialog.setCancelable(false);
