@@ -3,6 +3,7 @@ package com.emagroup.oversea.sdk;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -29,7 +31,7 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
     private ResourceManager mResourceManager;
     private WebView mWebView;
     private ProgressBar mProgressBar;
-    private TextView mTvBack;
+    private FrameLayout mFlBack;
     private TextView mTvClose;
 
     @Override
@@ -44,9 +46,9 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
 
         mWebView = (WebView) findViewById(mResourceManager.getViewId("wv_login"));
         mProgressBar = (ProgressBar) findViewById(mResourceManager.getViewId("wv_progressbar"));
-        mTvBack = (TextView) findViewById(mResourceManager.getViewId("tv_back"));
+        mFlBack = (FrameLayout) findViewById(mResourceManager.getViewId("fl_back"));
         mTvClose = (TextView) findViewById(mResourceManager.getViewId("tv_close"));
-        mTvBack.setOnClickListener(this);
+        mFlBack.setOnClickListener(this);
         mTvClose.setOnClickListener(this);
 
         Intent intent = getIntent();
@@ -85,7 +87,7 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int viewId = v.getId();
-        if (viewId == mResourceManager.getViewId("tv_back")) {
+        if (viewId == mResourceManager.getViewId("fl_back")) {
             mWebView.goBack();
         } else if (viewId == mResourceManager.getViewId("tv_close")) {
             this.finish();
@@ -140,11 +142,17 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
 
             @Override
             public void onPageFinished(WebView view, String url) {
+                //Log.e("aaaa", "22222");
                 if (mWebView.canGoBack()) {
-                    mTvBack.setVisibility(View.VISIBLE);
+                    mFlBack.setVisibility(View.VISIBLE);
                 } else {
-                    mTvBack.setVisibility(View.GONE);
+                    mFlBack.setVisibility(View.GONE);
                 }
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                //Log.e("aaaa", "11111");
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {

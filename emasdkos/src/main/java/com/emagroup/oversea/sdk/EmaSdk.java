@@ -24,7 +24,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -239,6 +238,11 @@ public class EmaSdk {
             @Override
             public void run() {
                 UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(mActivity.getApplicationContext());
+                if (userLoginInfo == null || userLoginInfo.getAccessToken() == null) {
+                    ToastHelper.toast(mActivity, "please login first!");
+                    return;
+                }
+
                 HashMap<String, String> urlParams = new HashMap<>();
                 urlParams.put("client_id", getClientId());
                 urlParams.put("op_id", ResourceManager.getOpId(mActivity));
