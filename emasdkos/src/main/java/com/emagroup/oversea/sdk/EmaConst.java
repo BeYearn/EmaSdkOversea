@@ -9,6 +9,7 @@ public class EmaConst {
 	//handler回调
 	public static final int EMA_LOGIN_URL_DONE = 10001;         //这个里面五位数起
 	public static final int EMA_ACCOUNT_UPGRADE_URL_DONE = 10002;
+	public static final int EMA_GPA_NOTIFY_RETRY = 10003;
 
 	//permission请求码
 	public static final int REQUEST_CODE_READPHONESTATE_PERMISSION = 20001;

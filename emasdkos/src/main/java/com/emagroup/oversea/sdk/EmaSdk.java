@@ -101,6 +101,9 @@ public class EmaSdk {
                     intent2.putExtra("showCloseView", true);
                     mActivity.startActivity(intent2);
                     break;
+                case EmaConst.EMA_GPA_NOTIFY_RETRY:
+                    notifyPlatform();
+                    break;
             }
         }
     };
@@ -493,7 +496,7 @@ public class EmaSdk {
             public void run() {
                 try {
                     int response = mService.consumePurchase(3, mActivity.getPackageName(), purchaseToken);
-                    L.e("consumePurchase", "response: " + response);
+                    L.e("consumePurchase", "response: " + response);   //还会有8?????重复消耗
 
                 } catch (RemoteException e) {
                     e.printStackTrace();
@@ -503,6 +506,9 @@ public class EmaSdk {
 
     }
 
+    private int responseCode;
+    private String purchaseData;
+    private String dataSignature;
 
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
 
@@ -514,55 +520,13 @@ public class EmaSdk {
                     Log.e("google play", "onActivityResult's intent is null");
                     return;
                 }
-                int responseCode = intent.getIntExtra("RESPONSE_CODE", 0);
-                final String purchaseData = intent.getStringExtra("INAPP_PURCHASE_DATA");
-                final String dataSignature = intent.getStringExtra("INAPP_DATA_SIGNATURE");
+                responseCode = intent.getIntExtra("RESPONSE_CODE", 0);
+                purchaseData = intent.getStringExtra("INAPP_PURCHASE_DATA");
+                dataSignature = intent.getStringExtra("INAPP_DATA_SIGNATURE");
 
                 if (resultCode == Activity.RESULT_OK) {
-
-                    ThreadUtil.runInSubThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(mActivity.getApplicationContext());
-
-                            try {
-                                JSONObject jsonObject = new JSONObject(purchaseData);
-                                String sdkOrderId = jsonObject.getString("developerPayload");
-                                String productId = jsonObject.getString("productId");
-                                String purchaseToken = jsonObject.getString("purchaseToken");
-
-
-                                HashMap<String, String> params = new HashMap<>();
-                                params.put("account", userLoginInfo.getAccount()); //游客id  同deviceid
-                                params.put("op_id", ResourceManager.getOpId(mActivity));
-                                params.put("game_id", ResourceManager.getGameId(mActivity));
-                                params.put("product_id", productId);
-                                params.put("purchase_data", purchaseData);
-                                params.put("data_signnture", Base64.encodeToString(dataSignature.getBytes(), Base64.DEFAULT));//为了那个奇怪的+号
-                                params.put("order_id", sdkOrderId);
-                                params.put("token", userLoginInfo.getAccessToken());
-
-                                //gpa通知回调
-                                String s = new HttpRequestor().doPost(Url.payNotifyUrl(), params);
-                                L.e("payNotify", "result: " + s);
-
-                                JSONObject notifyResutl = new JSONObject(s);
-                                if (notifyResutl.getInt("code") == 0) { //gpa购买成功
-                                    EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYSUCCESS, "purchase successful");
-
-                                    boolean consumeNow = EmaUser.getInstance().getUserOrderInfo().isConsumeNow();
-                                    L.e("consume_now", consumeNow + "!!");
-                                    if (consumeNow) {
-                                        consumePurchase(purchaseToken);
-                                    }
-
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            ProgressUtil.getInstance(mActivity).closeProgressDialog();
-                        }
-                    });
+                    retryTime = 0;
+                    notifyPlatform();
                 } else if (resultCode == Activity.RESULT_CANCELED) {
                     EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYCANELI, "purchase canceled");
 
@@ -591,13 +555,84 @@ public class EmaSdk {
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-
                             ProgressUtil.getInstance(mActivity).closeProgressDialog();
                         }
                     });
                 }
                 break;
+
         }
+    }
+
+    int retryTime = 0;  //重试次数
+
+    /**
+     * gpa支付完成后失败的话的再次通知
+     */
+    private void notifyPlatform() {
+        ThreadUtil.runInSubThread(new Runnable() {
+            @Override
+            public void run() {
+                UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(mActivity.getApplicationContext());
+                try {
+                    JSONObject jsonObject = new JSONObject(purchaseData);
+                    String sdkOrderId = jsonObject.getString("developerPayload");
+                    String productId = jsonObject.getString("productId");
+                    String purchaseToken = jsonObject.getString("purchaseToken");
+
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("account", userLoginInfo.getAccount()); //游客id  同deviceid
+                    params.put("op_id", ResourceManager.getOpId(mActivity));
+                    params.put("game_id", ResourceManager.getGameId(mActivity));
+                    params.put("product_id", productId);
+                    params.put("purchase_data", purchaseData);
+                    params.put("data_signnture", Base64.encodeToString(dataSignature.getBytes(), Base64.DEFAULT));//为了那个奇怪的+号
+                    params.put("order_id", sdkOrderId);
+                    params.put("token", userLoginInfo.getAccessToken());
+
+                    //gpa通知回调
+                    String s = new HttpRequestor().doPost(Url.payNotifyUrl(), params);
+                    L.e("payNotify", "result: " + s);
+
+                    JSONObject notifyResutl = new JSONObject(s);
+                    int code = notifyResutl.getInt("code");
+                    String msg = notifyResutl.getString("msg");
+                    if (code == 0) { //验证通过
+                        EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYSUCCESS, "purchase successful");
+
+                        boolean consumeNow = EmaUser.getInstance().getUserOrderInfo().isConsumeNow();
+                        L.e("consume_now", consumeNow + "!!");
+                        if (consumeNow) {
+                            consumePurchase(purchaseToken);
+                        }
+                    } else { //通知验证失败
+                        EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYFALIED, msg);
+                    }
+                    ProgressUtil.getInstance(mActivity).closeProgressDialog();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYFALIED, "notify api maybe have something wrong");
+                    ProgressUtil.getInstance(mActivity).closeProgressDialog();
+                } catch (Exception e) {
+                    ProgressUtil.getInstance(mActivity).closeProgressDialog(); //后面重试时就不再出现菊花窗了
+                    e.printStackTrace();
+                    Log.e("pay notify", "Will try again soon");
+                    //EmaCallbackUtil.getInstance().onPayCallBack(EmaCallBackConst.PAYFALIED, "sdk will call repeated in 10 minutes");
+
+                    //重试
+                    try {
+                        retryTime++;
+                        if (retryTime < 8) {
+                            Thread.sleep(60 * 1000);
+                            mHandler.sendEmptyMessage(EmaConst.EMA_GPA_NOTIFY_RETRY);
+                            Log.e("retry", "EMA_GPA_NOTIFY_RETRY " + retryTime);
+                        }
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
     }
 
 
