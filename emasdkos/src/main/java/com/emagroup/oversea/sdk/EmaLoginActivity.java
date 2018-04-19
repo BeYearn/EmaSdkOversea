@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.webkit.CookieManager;
@@ -122,6 +123,9 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
     private void initView(boolean showCloseView) {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new JavaScriptinterface(this), "webview");
+
+        mWebView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.134 Safari/537.36 "+"EMA_AGENT_ANDROID");
+
         mWebView.getSettings().setSupportZoom(true);
         mWebView.getSettings().setBuiltInZoomControls(true);
         mWebView.getSettings().setDisplayZoomControls(false);
@@ -137,6 +141,7 @@ public class EmaLoginActivity extends Activity implements View.OnClickListener {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.e("webview:",url);
                 return false;
             }
 
