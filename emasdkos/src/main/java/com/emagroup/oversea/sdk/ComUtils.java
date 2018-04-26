@@ -4,10 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.net.wifi.WifiManager;
 import android.os.Build;
-import android.telephony.TelephonyManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONObject;
@@ -123,9 +120,15 @@ public class ComUtils {
     }
 
 
-    //设备ID
+    /**
+     * 原设备唯一ID
+     * 现在必须要改为广告id
+     *
+     * @param mContext
+     * @return
+     */
     public static String getDEVICE_ID(Context mContext) {
-        TelephonyManager tm = (TelephonyManager) mContext.getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
+        /*TelephonyManager tm = (TelephonyManager) mContext.getApplicationContext().getSystemService(Context.TELEPHONY_SERVICE);
         WifiManager manager = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
 
         String DEVICE_ID = tm.getDeviceId();
@@ -138,7 +141,22 @@ public class ComUtils {
             return oneId;
         }
         Log.e("DEVICE_ID" + "MAC", DEVICE_ID + "......" + MacAddress + "..." + AndroidSerialNum);
-        return DEVICE_ID;
+        return DEVICE_ID;*/
+
+        //===================================================================================================================
+
+        String advertisingId = "0";
+        try {
+            AdvertisingIdClient.AdInfo advertisingIdInfo = AdvertisingIdClient.getAdvertisingIdInfo(mContext);
+            advertisingId = advertisingIdInfo.getId();
+            boolean optOutEnabled = advertisingIdInfo.isLimitAdTrackingEnabled();
+            Log.i("advertisingId:", advertisingId);
+            Log.i("optOutEnabled:", optOutEnabled + "");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return advertisingId;
+
     }
 
 
@@ -156,7 +174,7 @@ public class ComUtils {
         }
     }
 
-    public static String buildGetParams(Map<String,String> params){
+    public static String buildGetParams(Map<String, String> params) {
         StringBuilder paramsBuilder = new StringBuilder();
         if (params != null) {
             Iterator iterator = params.keySet().iterator();
