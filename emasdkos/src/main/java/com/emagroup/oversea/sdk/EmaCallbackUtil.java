@@ -94,6 +94,12 @@ public class EmaCallbackUtil {
                                 } else {
                                     //登录过期
                                     mInitLoginListener.onCallBack(EmaCallBackConst.LOGINEXPIRED, "login expired");
+
+                                    //非要把逻辑设计到这里  过期后logout 然后login
+                                    ToastHelper.toast(activity,"We detected abnormal activity on your account, please relogin.");
+                                    EmaSdk.getInstance().logout();
+                                    EmaSdk.getInstance().login();
+
                                 }
                             } catch (Exception e) {
                                 e.printStackTrace();

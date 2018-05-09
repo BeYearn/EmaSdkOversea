@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
+import com.emagroup.oversea.sdk.ComUtils;
 import com.emagroup.oversea.sdk.EmaCallBackConst;
 import com.emagroup.oversea.sdk.EmaSDKListener;
 import com.emagroup.oversea.sdk.EmaSdk;
-import com.emagroup.oversea.sdk.ProgressUtil;
 import com.emagroup.oversea.sdk.ThreadUtil;
 import com.emagroup.oversea.sdk.ToastHelper;
 
@@ -168,8 +168,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
                 break;
             case R.id.bt_emshare:
-                ProgressUtil.getInstance(MainActivity.this).openProgressDialog();
-
+                //ProgressUtil.getInstance(MainActivity.this).openProgressDialog();
+                ThreadUtil.runInSubThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String device_id = ComUtils.getDEVICE_ID(MainActivity.this);
+                        ToastHelper.toast(MainActivity.this, "AdId " + device_id);
+                    }
+                });
                 break;
             case R.id.bt_snap_shot:
                 /*UserLoginInfo userLoginInfo = EmaUser.getInstance().getUserLoginInfo(MainActivity.this);

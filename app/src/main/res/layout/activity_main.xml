@@ -77,7 +77,7 @@
             android:id="@+id/bt_emshare"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="分享" />
+            android:text="广告ID" />
         <Button
             android:id="@+id/bt_snap_shot"
             android:layout_width="wrap_content"
